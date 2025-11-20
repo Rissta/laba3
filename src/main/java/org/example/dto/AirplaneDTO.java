@@ -5,6 +5,8 @@ public class AirplaneDTO {
     private String model;
     private Integer seats;
 
+    public AirplaneDTO() {
+    }
 
     public AirplaneDTO(Integer id, String model, Integer seats) {
         this.id = id;
