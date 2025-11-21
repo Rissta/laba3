@@ -5,8 +5,6 @@ import org.example.entity.Airplane;
 import java.util.List;
 import java.util.Optional;
 
-// Интерфейс для работы с базой данных с помощью нашего класса Airplane
-// В интерфейсах только абстрактные классы, без логики
 
 public interface AirplaneRepository {
     int save(Airplane airplane);

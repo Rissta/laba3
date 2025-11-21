@@ -1,6 +1,5 @@
 package org.example.entity;
 
-// Базовый объект
 
 import java.util.Objects;
 

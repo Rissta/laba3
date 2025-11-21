@@ -8,36 +8,21 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-// Ну я тут пару объясню. Еще и самый нижний метод
-
-// Это расширения работы нашего интерфейса для работы с базой данных
 
 public class AirplaneRepositoryImpl implements AirplaneRepository {
 
-    // Запись объекта в бд
-    // Передаем объект класса airplane
+
     @Override
     public int save(Airplane airplane) {
-        // Пишем запрос ручками. Тут уже сами. Разберетесь
         String sql = "INSERT INTO airplane (model, seats) " +
                 "VALUES (?, ?) RETURNING id";
 
-        // Открываем соединение с бд
-        // PreparedStatement — метод prepareStatement() класса Connection.
-        // В метод передаётся выражение SQL, которое может содержать знаки подстановки.
-        // В нашем случае знаки подстановки это вопрос '?'
-        // От sql инъекций кстати не защищает
         try (Connection conn = DatabaseConfig.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
-            // Подставляем наши параметры в запрос по порядку.
-            // Первый вопрос в запросе это - set у которого первый параметр единица
             pstmt.setString(1, airplane.getModel());
             pstmt.setInt(2, airplane.getSeats());
 
-            // Выполняем запрос и получаем
-            // так сказать табличный результат sql запроса
-            // ResultSet - позволяет перемещаться по нашей таблице
             ResultSet rs = pstmt.executeQuery();
             if (rs.next()) {
                 return rs.getInt("id");
@@ -49,7 +34,6 @@ public class AirplaneRepositoryImpl implements AirplaneRepository {
         }
     }
 
-    // См. далее
     @Override
     public Optional<Airplane> findById(int id) {
         String sql = "SELECT * FROM airplane WHERE id = ?";
@@ -70,9 +54,6 @@ public class AirplaneRepositoryImpl implements AirplaneRepository {
         }
     }
 
-    // Получение всех продуктов
-    // Начало аналогично как в первом запросе
-    // Только нет параметров и запрос другой
     @Override
     public List<Airplane> findAll() {
         String sql = "SELECT * FROM airplane ORDER BY id";
@@ -82,11 +63,6 @@ public class AirplaneRepositoryImpl implements AirplaneRepository {
              Statement stmt = conn.createStatement();
              ResultSet rs = stmt.executeQuery(sql)) {
 
-            // После получения всех пользователь
-            // Перемещаемся по всем, до последнее
-            // и записываем их с помощью нашего метода
-            // который преобразовывает данные из sql запроса в объект airplane
-            // Метод в конце этого класса
             while (rs.next()) {
                 airplanes.add(mapResultSetToAirplane(rs));
             }
@@ -208,11 +184,8 @@ public class AirplaneRepositoryImpl implements AirplaneRepository {
         }
     }
 
-    // Метод преобразования данных продукта из sql запроса в объект airplane
     private Airplane mapResultSetToAirplane(ResultSet rs) throws SQLException {
         Airplane airplane = new Airplane();
-        // В сетторы передаем колонки из sql
-        // Указываем какой тип должны получить и в качестве параметра название столбца
         airplane.setId(rs.getInt("id"));
         airplane.setModel(rs.getString("model"));
         airplane.setSeats(rs.getInt("seats"));
